@@ -8,15 +8,16 @@ USERNAME_SAVE_PATH = '~/.python_hue'
 
 
 def parse_response(response):
-    json = response.json()[0]
-    if 'error' not in json:
-        return json['success']
+    json = response.json()
 
-    error = json['error']
-    exception = {
-        '101': exceptions.LinkButtonNotPressed,
-    }.get(str(error.get('type')), exceptions.HueApiException)
-    raise exception(error.get('description'))
+    if json is list and len(json) > 0 and 'error' in json:
+        error = json['error']
+        exception = {
+            '101': exceptions.LinkButtonNotPressed,
+        }.get(str(error.get('type')), exceptions.HueApiException)
+        raise exception(error.get('description'))
+
+    return json
 
 
 def authenticate(app_name, bridge_host='philips-hue', client_name=None):
