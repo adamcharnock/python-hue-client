@@ -25,7 +25,7 @@ setup(
     long_description=open('README.rst').read() if exists("README.rst") else "",
     # Any requirements here, e.g. "Django >= 1.1.1"
     install_requires=[
-        'siesta>=0.5.1,<0.6',
+        'finch',
         'requests==2.7.0',
     ],
 )
