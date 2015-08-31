@@ -88,14 +88,16 @@ class Resource(Model):
             elif isinstance(v, fields.Embedded):
                 getattr(self, k).set_parent_values(parent=self)
 
-    def save(self, client):
-        endpoint = make_endpoint(client, self)
+    def prepare_save(self):
         encoded = self.encode()
         for k, v in encoded.items():
             if v == self._persisted_data[k]:
                 encoded.pop(k)
-        client.put(endpoint, encoded)
+        return encoded
 
+    def save(self, client):
+        endpoint = make_endpoint(client, self)
+        client.put(endpoint, self.prepare_save())
 
 
 class IndexedByIdDecoder(object):

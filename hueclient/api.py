@@ -1,3 +1,4 @@
+from time import sleep
 import requests
 
 import exceptions
@@ -29,8 +30,24 @@ class Client(object):
 if __name__ == '__main__':
     client = Client()
     bridge = Bridge.objects.get(client)
+
     for l in bridge.lights:
         state = l.state
         state.on = True
+        state.brightness = 100
+        state.color_temperature = 430
         state.save(client)
 
+    # current = 1
+    # previous = 0
+    # max = len(bridge.lights)
+    # while True:
+    #     previous = current
+    #     current += 1
+    #     current %= 6
+    #     print current, previous
+    #     bridge.lights[current].state.on = True
+    #     bridge.lights[previous].state.on = False
+    #     bridge.lights[current].state.save(client)
+    #     bridge.lights[previous].state.save(client)
+    #     sleep(3)
