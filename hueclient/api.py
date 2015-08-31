@@ -1,36 +1,39 @@
-from time import sleep
 import requests
 
 import exceptions
 from hueclient import utilities
 
 
-class HueClient(object):
-    _connection = None
+class Api(object):
 
-    def register_connection(self, connection):
-        self.__dict__['_connection'] = connection
+    def __init__(self):
+        self.resources = set()
+        self.client = None
 
-    def __getattr__(self, item):
-        return getattr(self._connection, item)
+    def register_resource(self, resource):
+        self.resources.add(resource)
 
-    def __setattr__(self, key, value):
-        setattr(self._connection, key, value)
+        # Pass the client to the model if we have the client available
+        if self.client:
+            resource.contribute_client(self.client)
 
-hue_client = HueClient()
+    def set_client(self, client):
+        """
+        Set the client for the API to use, applying it to any
+        already-registered resources.
+        """
+        if self.client:
+            raise exceptions.ClientAlreadySet()
+        self.client = client
+
+        for r in self.resources:
+            r.contribute_client(client)
 
 
-class Connection(object):
-
-    def __init__(self, bridge_host='philips-hue', username=None):
-        username = username or utilities.load_username()
-        if not username:
-            raise exceptions.UsernameRequired('Username not specified and not found on disk')
-
-        self.base_url='http://{bridge_host}/api/{username}'.format(**locals())
+class Client(object):
 
     def make_url(self, endpoint):
-        return '{}/{}'.format(self.base_url, endpoint.lstrip('/'))
+        raise NotImplementedError()
 
     def get(self, endpoint):
         r = requests.get(self.make_url(endpoint))
@@ -39,3 +42,6 @@ class Connection(object):
     def put(self, endpoint, json):
         r = requests.put(self.make_url(endpoint), json=json)
         return utilities.parse_response(r)
+
+
+

@@ -50,6 +50,9 @@ def authenticate_interactive(app_name=None, bridge_host=None, client_name=None):
 
     print 'Your username is: {}'.format(username)
 
+    if raw_input('Save username to {} [Y/n]?'.format(USERNAME_SAVE_PATH)) != 'n':
+        save_username(username)
+
 
 def save_username(username):
     with open(os.path.expanduser(USERNAME_SAVE_PATH), 'w') as f:

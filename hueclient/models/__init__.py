@@ -1,7 +1,6 @@
 import weakref
 from booby import Model, fields
 from booby.models import ModelMeta
-from hueclient.api import hue_client
 
 
 def make_endpoint(model):
@@ -32,7 +31,7 @@ class Manager(object):
     def get(self, **endpoint_params):
         """Get a single model"""
         endpoint = self.model.Meta.endpoint.format(**endpoint_params)
-        data = hue_client.get(endpoint)
+        data = self.client.get(endpoint)
         decoded = self.model.decode(data)
         return self.model(**decoded)
 
@@ -40,7 +39,7 @@ class Manager(object):
         """Load all the results for this manager"""
         if self.results is not None:
             return
-        data = hue_client.get(self.get_results_endpoint())
+        data = self.client.get(self.get_results_endpoint())
         for decoder in self.get_decoders():
             data = decoder(data)
         self.results = [self.model(**d) for d in data]
@@ -53,6 +52,10 @@ class Manager(object):
 
     def contribute_to_class(self, model):
         self.model = model
+
+    @classmethod
+    def contribute_client(cls, client):
+        cls.client = client
 
     def filter(self, results):
         if self.filter_fn:
@@ -82,10 +85,12 @@ class ResourceMetaclass(ModelMeta):
     def setup_managers(cls, resource, dct):
         # Setup any custom managers
         has_custom_manager = False
+        managers = []
         for k, v in dct.items():
             if isinstance(v, Manager):
                 v.contribute_to_class(resource)
                 has_custom_manager = True
+                managers.append(v)
 
         # If we don't have a custom manager, then add the
         # default manager
@@ -93,6 +98,9 @@ class ResourceMetaclass(ModelMeta):
             manager = Manager()
             manager.contribute_to_class(resource)
             resource.objects = manager
+            managers.append(manager)
+
+        cls._managers = managers
 
 
 class Resource(Model):
@@ -116,6 +124,12 @@ class Resource(Model):
     def decode(self, raw):
         return super(Resource, self).decode(raw)
 
+    @classmethod
+    def contribute_client(cls, client):
+        cls.client = client
+        for manager in cls._managers:
+            manager.contribute_client(client)
+
     def set_parent_values(self, parent=None):
         if parent:
             parent = weakref.proxy(parent)
@@ -136,8 +150,8 @@ class Resource(Model):
         return encoded
 
     def save(self):
-        endpoint = make_endpoint(hue_client, self)
-        hue_client.put(endpoint, self.prepare_save())
+        endpoint = make_endpoint(self)
+        self.client.put(endpoint, self.prepare_save())
 
 
 class IndexedByIdDecoder(object):
