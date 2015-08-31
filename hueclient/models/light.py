@@ -1,12 +1,15 @@
 from booby import fields
-from hueclient.models import Manager, Resource
+from hueclient.models import Manager, Resource, IndexedByIdDecoder
 from hueclient import validators as v
 
 
 class LightManager(Manager):
 
-    def new(self):
-        pass
+    def get_decoders(self):
+        return self.decoders + [IndexedByIdDecoder()]
+
+    def reachable(self):
+        return self.filter(lambda light: light.state.reachable)
 
 
 class LightState(Resource):
@@ -87,6 +90,11 @@ class Light(Resource):
     software_version = fields.String(name='swversion')
 
     state = fields.Embedded(LightState)
+
+    objects = LightManager()
+    reachable = LightManager(filter=lambda light: light.state.reachable)
+    unreachable = LightManager(filter=lambda light: not light.state.reachable)
+    new = LightManager(results_endpoint='/lights/new')
 
     class Meta:
         endpoint = '/lights/{light_id}'

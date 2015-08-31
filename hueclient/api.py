@@ -3,10 +3,24 @@ import requests
 
 import exceptions
 from hueclient import utilities
-from hueclient.models.bridge import Bridge
 
 
-class Client(object):
+class HueClient(object):
+    _connection = None
+
+    def register_connection(self, connection):
+        self.__dict__['_connection'] = connection
+
+    def __getattr__(self, item):
+        return getattr(self._connection, item)
+
+    def __setattr__(self, key, value):
+        setattr(self._connection, key, value)
+
+hue_client = HueClient()
+
+
+class Connection(object):
 
     def __init__(self, bridge_host='philips-hue', username=None):
         username = username or utilities.load_username()
@@ -25,29 +39,3 @@ class Client(object):
     def put(self, endpoint, json):
         r = requests.put(self.make_url(endpoint), json=json)
         return utilities.parse_response(r)
-
-
-if __name__ == '__main__':
-    client = Client()
-    bridge = Bridge.objects.get(client)
-
-    for l in bridge.lights:
-        state = l.state
-        state.on = True
-        state.brightness = 100
-        state.color_temperature = 430
-        state.save(client)
-
-    # current = 1
-    # previous = 0
-    # max = len(bridge.lights)
-    # while True:
-    #     previous = current
-    #     current += 1
-    #     current %= 6
-    #     print current, previous
-    #     bridge.lights[current].state.on = True
-    #     bridge.lights[previous].state.on = False
-    #     bridge.lights[current].state.save(client)
-    #     bridge.lights[previous].state.save(client)
-    #     sleep(3)
