@@ -22,7 +22,6 @@ class Client(object):
 
 
 class Api(object):
-    resources = []
     client_class = Client
     base_url = '/'
 

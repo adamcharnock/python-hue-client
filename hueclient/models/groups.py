@@ -1,6 +1,8 @@
 from booby import fields
+from hueclient.fields import ManagedIdListCollection
 from hueclient.models import Manager, Resource, IndexedByIdDecoder
 from hueclient import validators as v
+from hueclient.models.light import Light
 
 
 class GroupManager(Manager):
@@ -10,8 +12,9 @@ class GroupManager(Manager):
 
 
 class Group(Resource):
+    id = fields.Integer(v.UnsignedInteger())
     name = fields.String(v.Required())
-    lights = fields.List()
+    lights = ManagedIdListCollection(model=Light)
 
     objects = GroupManager()
 

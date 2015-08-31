@@ -42,7 +42,7 @@ class Manager(object):
         data = self.client.get(self.get_results_endpoint())
         for decoder in self.get_decoders():
             data = decoder(data)
-        self.results = [self.model(**d) for d in data]
+        self.results = [self.model.decode(d) for d in data]
 
     def get_decoders(self):
         return self.decoders

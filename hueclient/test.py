@@ -31,13 +31,13 @@ hue_api = HueApi()
 
 if __name__ == '__main__':
 
-    bridge = Bridge.objects.get()
-
-    print bridge.lights.count()
-
-    print Light.objects.count()
-    print Light.reachable.count()
-    print Light.new.count()
+    # bridge = Bridge.objects.get()
+    #
+    # print bridge.lights.count()
+    #
+    # print Light.objects.count()
+    # print Light.reachable.count()
+    # print Light.new.count()
 
     print Group.objects.all()
     exit()
