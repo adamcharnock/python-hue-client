@@ -100,7 +100,7 @@ class ResourceMetaclass(ModelMeta):
             resource.objects = manager
             managers.append(manager)
 
-        cls._managers = managers
+        resource._managers = managers
 
 
 class Resource(Model):

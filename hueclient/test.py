@@ -1,41 +1,45 @@
-import exceptions
-from hueclient import utilities
+from hueclient import utilities, exceptions
 from hueclient.api import Api, Client
 from hueclient.models.bridge import Bridge
 from hueclient.models.groups import Group
 from hueclient.models.light import Light, LightState
 
-hue_api = Api()
-hue_api.register_resource(Bridge)
-hue_api.register_resource(Light)
-hue_api.register_resource(LightState)
-hue_api.register_resource(Group)
 
-
-class HueClient(Client):
+class HueApi(Api):
+    resources = [
+        Bridge,
+        Light,
+        LightState,
+        Group,
+    ]
 
     def __init__(self, bridge_host='philips-hue', username=None):
-        username = username or utilities.load_username()
-        if not username:
+        self.bridge_host = bridge_host
+        self.username = username or utilities.load_username()
+        if not self.username:
             raise exceptions.UsernameRequired('Username not specified and not found on disk')
+        super(HueApi, self).__init__()
 
-        self.base_url = 'http://{bridge_host}/api/{username}'.format(**locals())
+    def get_base_url(self):
+        return 'http://{bridge_host}/api/{username}'.format(
+            bridge_host=self.bridge_host,
+            username=self.username,
+        )
 
-    def make_url(self, endpoint):
-        return '{}/{}'.format(self.base_url, endpoint.lstrip('/'))
+hue_api = HueApi()
 
 
 if __name__ == '__main__':
 
-    client = HueClient()
-    hue_api.set_client(client)
     bridge = Bridge.objects.get()
-    
+
     print bridge.lights.count()
 
     print Light.objects.count()
     print Light.reachable.count()
     print Light.new.count()
+
+    print Group.objects.all()
     exit()
 
     for l in bridge.lights:
