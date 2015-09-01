@@ -9,7 +9,10 @@ Welcome to Python Hue Client's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+
+    api/index
+    todo
 
 
 

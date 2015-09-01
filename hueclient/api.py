@@ -68,6 +68,15 @@ class Api(object):
     resources = []
 
     def __init__(self, **options):
+        """ Initialise the Api
+
+        Pass options in to customise instance variables. For example::
+
+            my_api = Api(base_url='http://example.com/api/v1')
+
+        :param options: All options specified will will become
+                        available as instance variables.
+        """
         for k, v in options.items():
             setattr(self, k, v)
 
@@ -76,6 +85,13 @@ class Api(object):
             resource.contribute_client(self.client)
 
     def register_resource(self, resource):
+        """Register a resource with the Api
+
+        This will cause the resource's client attribute to be
+        populated.
+
+        :param resource Resource:
+        """
         self.resources.add(resource)
 
         # Pass the client to the model if we have the client available

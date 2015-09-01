@@ -1,8 +1,9 @@
 from collections import MutableSequence
 from booby.decoders import Decoder
 from booby.encoders import Encoder
-from booby.fields import Collection, List
+from booby.fields import *
 from booby.helpers import nullable
+from hueclient import validators
 
 
 class ManagedCollection(Collection):
@@ -61,11 +62,43 @@ class ManagedIdListCollection(ManagedCollection):
         self.manager.results.set_parent_lazy(parent)
 
 
+class Dictionary(Field):
+    """:class:`Field` subclass with `dict` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(Dictionary, self).__init__(validators.Dictionary(), *args, **kwargs)
+
+
+class TimePattern(String):
+    """ :class:`Field` subclass for Philips Hue time pattern.
+
+    Details can be found in the
+    `Philips Hue Documentation <http://www.developers.meethue.com/documentation/datatypes-and-time-patterns>`_.
+
+    .. todo:: The :class:`TimePattern` field needs implementing
+
+    """
+    pass
+
+
+class IsoDate(String):
+    """ :class:`Field` subclass for Philips Hue time pattern.
+
+    Details can be found in the
+    `Philips Hue Documentation <http://www.developers.meethue.com/documentation/datatypes-and-time-patterns>`_.
+
+    .. todo:: The :class:`IsoDate` field needs implementing
+              Should parse ISO8601 strings into datetime objects and back again.
+
+    """
+    pass
+
+
 class LazyList(MutableSequence):
     """ Wraps a generate which from which data is only loaded when needed
-    """
 
-    # TODO: The loading logic could be more intelligent
+    .. todo:: The :class:`LazyList` loading logic could be more intelligent
+    """
 
     def __init__(self, generator, size):
         self._generator = generator

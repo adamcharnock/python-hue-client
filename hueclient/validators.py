@@ -49,3 +49,11 @@ class Range(Integer):
         if self.min is not None and value < self.min:
             raise errors.ValidationError(
                 'Value {} is below the minimum of {}'.format(value, self.min))
+
+
+class Dictionary(Validator):
+
+    @nullable
+    def validate(self, value):
+        if isinstance(value, dict):
+            raise errors.ValidationError('value must be a dictionary')

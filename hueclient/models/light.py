@@ -1,4 +1,4 @@
-from booby import fields
+from hueclient import fields
 from hueclient.models import Manager, Resource, IndexedByIdDecoder
 from hueclient import validators as v
 
