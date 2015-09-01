@@ -1,6 +1,7 @@
 import weakref
 from booby import Model, fields
 from booby.models import ModelMeta
+from hueclient.fields import ManagedCollection
 
 
 def make_endpoint(model):
@@ -42,7 +43,7 @@ class Manager(object):
         data = self.client.get(self.get_results_endpoint())
         for decoder in self.get_decoders():
             data = decoder(data)
-        self.results = [self.model.decode(d) for d in data]
+        self.results = [self.model(**self.model.decode(d)) for d in data]
 
     def get_decoders(self):
         return self.decoders
@@ -136,9 +137,8 @@ class Resource(Model):
         self.parent_resource = parent
 
         for k, v in self._fields.items():
-            if isinstance(v, fields.Collection):
-                for inst in getattr(self, k):
-                    inst.set_parent_values(parent=self)
+            if isinstance(v, ManagedCollection):
+                v.set_parent_in_models(parent=self)
             elif isinstance(v, fields.Embedded):
                 getattr(self, k).set_parent_values(parent=self)
 

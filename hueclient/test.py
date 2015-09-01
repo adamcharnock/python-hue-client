@@ -39,7 +39,12 @@ if __name__ == '__main__':
     # print Light.reachable.count()
     # print Light.new.count()
 
-    print Group.objects.all()
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    a = Group.objects.get(group_id=2).lights.all()
+    import pdb; pdb.set_trace()
+    len(a)
+    print a[0]
     exit()
 
     for l in bridge.lights:
