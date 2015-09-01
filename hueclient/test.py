@@ -31,20 +31,17 @@ hue_api = HueApi()
 
 if __name__ == '__main__':
 
-    # bridge = Bridge.objects.get()
-    #
-    # print bridge.lights.count()
-    #
-    # print Light.objects.count()
-    # print Light.reachable.count()
-    # print Light.new.count()
+    bridge = Bridge.objects.get()
 
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
+    print bridge.lights.count()
+
+    print Light.objects.count()
+    print Light.reachable.count()
+    print Light.new.count()
+
     a = Group.objects.get(group_id=2).lights.all()
-    import pdb; pdb.set_trace()
-    len(a)
-    print a[0]
+    print a
+
     exit()
 
     for l in bridge.lights:

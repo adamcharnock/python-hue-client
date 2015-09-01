@@ -20,9 +20,9 @@ class ManagedCollection(Collection):
     def encode(self, value):
         return super(ManagedCollection, self).encode(self.manager.results)
 
-    def set_parent_in_models(self, parent):
+    def contribute_parent_to_models(self, parent):
         for resource in self.manager.all():
-            resource.set_parent_values(parent)
+            resource.contribute_parents(parent)
 
     def __getattr__(self, name):
         return getattr(self.manager, name)
@@ -57,7 +57,7 @@ class ManagedIdListCollection(ManagedCollection):
         self.manager.results = value
         return self.manager
 
-    def set_parent_in_models(self, parent):
+    def contribute_parent_to_models(self, parent):
         self.manager.results.set_parent_lazy(parent)
 
 
@@ -81,7 +81,7 @@ class LazyList(MutableSequence):
 
     def _set_parent(self):
         for v in self._values:
-            v.set_parent_values(self.parent)
+            v.contribute_parents(self.parent)
 
     def _load(self):
         if not self.is_loaded():
