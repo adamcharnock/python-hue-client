@@ -17,7 +17,7 @@ setup(
     # Any executable scripts, typically in 'bin'. E.g 'bin/do-something.py'
     scripts=[],
     # REQUIRED: Your project's URL
-    url='github.com/adamcharnock/python-hue-client',
+    url='http://github.com/adamcharnock/python-hue-client',
     # Put your license here. See LICENSE.txt for more information
     license='MIT',
     # Put a nice one-liner description here

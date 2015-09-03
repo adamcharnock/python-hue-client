@@ -1,33 +1,43 @@
 from _socket import gethostname
 import json
 import os
-import requests
-from hueclient import exceptions
+from repose import exceptions
+
 
 USERNAME_SAVE_PATH = '~/.python_hue'
 
 
+def handle_error(error):
+    exception, message = {
+        '101': (exceptions.LinkButtonNotPressed, ''),
+    }.get(
+        str(error.get('type')),
+        (exceptions.HueApiException, 'Error type {type} when calling {address}: {description}')
+    )
+    raise exception(message.format(**error))
+
+
 def parse_response(response):
     json = response.json()
+    error = None
+    try:
+        error = json[0]['error']
+    except (IndexError, KeyError):
+        pass
 
-    if json is list and len(json) > 0 and 'error' in json:
-        error = json['error']
-        exception = {
-            '101': exceptions.LinkButtonNotPressed,
-        }.get(str(error.get('type')), exceptions.HueApiException)
-        raise exception(error.get('description'))
-
-    return json
+    if error:
+        return handle_error(error)
+    else:
+        return json
 
 
-def authenticate(app_name, bridge_host='philips-hue', client_name=None):
+def authenticate(client, app_name, client_name=None):
     client_name = client_name or gethostname()
 
-    url = 'http://{bridge_host}/api'.format(**locals())
-    r = requests.post(url, json={
+    response = client.post('/api', json={
         'devicetype': '{}#{}'.format(app_name, client_name),
     })
-    return parse_response(r)['username']
+    return response['success']['username']
 
 
 def authenticate_interactive(app_name=None, bridge_host=None, client_name=None):
@@ -70,3 +80,4 @@ def load_username():
     except IOError:
         return None
     return json.loads(contents)['philips-hue']['username']
+

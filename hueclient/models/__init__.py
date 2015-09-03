@@ -200,6 +200,12 @@ class Resource(Model):
         self.client.put(endpoint, prepared_data)
         self._persisted_data = encoded
 
+    def as_dict(self):
+        d = {}
+        for field_name in self._fields.keys():
+            d[field_name] = getattr(self, field_name)
+        return d
+
 
 class IndexedByIdDecoder(Decoder):
     """ Decode object responses which are indexed by id
