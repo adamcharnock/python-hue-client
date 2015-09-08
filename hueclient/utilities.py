@@ -1,7 +1,8 @@
 from _socket import gethostname
 import json
 import os
-from repose import exceptions
+import requests
+from hueclient import exceptions
 
 
 USERNAME_SAVE_PATH = '~/.python_hue'
@@ -31,13 +32,14 @@ def parse_response(response):
         return json
 
 
-def authenticate(client, app_name, client_name=None):
+def authenticate(bridge_host, app_name, client_name=None):
     client_name = client_name or gethostname()
-
-    response = client.post('/api', json={
+    url = 'http://{}/api'.format(bridge_host)
+    response = requests.post(url, json={
         'devicetype': '{}#{}'.format(app_name, client_name),
     })
-    return response['success']['username']
+    json = parse_response(response)
+    return json[0]['success']['username']
 
 
 def authenticate_interactive(app_name=None, bridge_host=None, client_name=None):

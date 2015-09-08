@@ -28,4 +28,9 @@ setup(
         'booby==0.7.0',
         'requests==2.7.0',
     ],
+    entry_points={
+        'console_scripts': [
+            'hue_authenticate = hueclient.utilities:authenticate_interactive',
+        ]
+    }
 )
