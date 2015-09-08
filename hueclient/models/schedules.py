@@ -1,6 +1,8 @@
+from repose.managers import Manager
+from repose.resources import Resource
 from hueclient import fields
 from booby import validators as v
-from hueclient.models import Resource, Manager, IndexedByIdDecoder
+from hueclient.models import IndexedByIdDecoder
 
 
 class ScheduleManager(Manager):

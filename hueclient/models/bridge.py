@@ -1,5 +1,6 @@
+from repose.resources import Resource
 from hueclient import fields
-from hueclient.models import Resource, IndexedByIdDecoder
+from hueclient.models import IndexedByIdDecoder
 from hueclient.models.light import Light
 
 

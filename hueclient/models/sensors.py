@@ -1,5 +1,6 @@
+from repose.managers import Manager
+from repose.resources import Resource
 from hueclient import fields
-from hueclient.models import Resource
 
 class Sensor(Resource):
     pass
