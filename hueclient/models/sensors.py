@@ -1,6 +1,8 @@
 from repose.managers import Manager
 from repose.resources import Resource
 from hueclient import fields
+from hueclient.monitor import MonitorMixin
+
 
 class Sensor(Resource):
     pass
@@ -13,7 +15,7 @@ class TapSwitchConfig(Resource):
         endpoint = '/sensors/{tapswitch_id}/config'
 
 
-class TapSwitchState(Resource):
+class TapSwitchState(MonitorMixin, Resource):
     button_event = fields.Integer(name='buttonevent')
     last_updated = fields.IsoDate(name='lastupdated')
 
@@ -21,8 +23,8 @@ class TapSwitchState(Resource):
         endpoint = '/sensors/{tapswitch_id}/state'
 
 
-class TapSwitch(Resource):
-    id = fields.Integer()
+class TapSwitch(MonitorMixin, Resource):
+    id = fields.Integer(from_endpoint='id')
     state = fields.Embedded(TapSwitchState)
     config = fields.Embedded(TapSwitchConfig)
     name = fields.String()
@@ -32,5 +34,5 @@ class TapSwitch(Resource):
     unique_id = fields.String(name='uniqueid')
 
     class Meta:
-        endpoint = '/sensors/{tapswitch_id}'
+        endpoint = '/sensors/{id}'
         endpoint_list = '/sensors'
