@@ -3,6 +3,7 @@ from repose.resources import Resource
 from hueclient import fields
 from hueclient.models import IndexedByIdDecoder
 from hueclient import validators as v
+from hueclient.monitor import MonitorMixin
 
 
 class LightManager(Manager):
@@ -14,7 +15,7 @@ class LightManager(Manager):
         return self.filter(lambda light: light.state.reachable)
 
 
-class LightState(Resource):
+class LightState(MonitorMixin, Resource):
     MODE_HUE_SAT = 'hs'
     MODE_COLOR_TEMP = 'ct'
     MODE_XY = 'xy'
@@ -82,24 +83,38 @@ class LightState(Resource):
         self._color_temperature = xy
 
 
-class Light(Resource):
-    id = fields.Integer(v.UnsignedInteger())
+class Light(MonitorMixin, Resource):
+    #: The ID given to the light by the bridge
+    id = fields.Integer(v.UnsignedInteger(), from_endpoint='id')
+    #: A unique, editable name given to the light
     name = fields.String(v.Required())
+    #: A fixed name describing the type of light e.g. "Extended color light"
     type = fields.String()
+    #: The hardware model of the light
     model_id = fields.String(name='modelid')
+    #: As of bridge version 1.7. The manufacturer name
     manufacturer_name = fields.String(name='manufacturername')
+    #: As of bridge version 1.4. Unique id of the device.
+    #: The MAC address of the device with a unique
+    #: endpoint id in the form: AA:BB:CC:DD:EE:FF:00:11-XX
     unique_id = fields.String(name='uniqueid')
+    #: An identifier for the software version running on the light.
     software_version = fields.String(name='swversion')
 
+    #: The state of the light as a :class:`LightState` object
     state = fields.Embedded(LightState)
 
+    #: A managed collection of all lights
     objects = LightManager()
+    #: A managed collection of all lights which are reachable
     reachable = LightManager(filter=lambda light: light.state.reachable)
+    #: A managed collection of all lights which are unreachable
     unreachable = LightManager(filter=lambda light: not light.state.reachable)
+    #: A managed collection of all lights which are new
     new = LightManager(results_endpoint='/lights/new')
 
     class Meta:
-        endpoint = '/lights/{light_id}'
+        endpoint = '/lights/{id}'
         endpoint_list = '/lights'
 
 

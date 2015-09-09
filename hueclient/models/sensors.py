@@ -8,7 +8,7 @@ class Sensor(Resource):
     pass
 
 
-class TapSwitchConfig(Resource):
+class TapSwitchConfig(MonitorMixin, Resource):
     on = fields.Boolean()
 
     class Meta:

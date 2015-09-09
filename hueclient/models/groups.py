@@ -5,6 +5,7 @@ from hueclient.fields import ManagedIdListCollection
 from hueclient.models import IndexedByIdDecoder
 from hueclient import validators as v
 from hueclient.models.light import Light
+from hueclient.monitor import MonitorMixin
 
 
 class GroupManager(Manager):
@@ -13,13 +14,13 @@ class GroupManager(Manager):
         return self.decoders + [IndexedByIdDecoder()]
 
 
-class Group(Resource):
-    id = fields.Integer(v.UnsignedInteger())
+class Group(MonitorMixin, Resource):
+    id = fields.Integer(v.UnsignedInteger(), from_endpoint='id')
     name = fields.String(v.Required())
     lights = ManagedIdListCollection(model=Light)
 
     objects = GroupManager()
 
     class Meta:
-        endpoint = '/groups/{group_id}'
+        endpoint = '/groups/{id}'
         endpoint_list = '/groups'

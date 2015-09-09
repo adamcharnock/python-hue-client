@@ -15,7 +15,6 @@ Contents:
     todo
 
 
-
 Indices and tables
 ==================
 

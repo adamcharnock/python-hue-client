@@ -1,8 +1,10 @@
-API Reference
-=============
+API Documentation
+=================
+
+Contents:
 
 .. toctree::
     :maxdepth: 2
 
-    api
-    fields
+    light
+    monitor

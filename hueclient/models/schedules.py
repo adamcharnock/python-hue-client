@@ -3,6 +3,7 @@ from repose.resources import Resource
 from hueclient import fields
 from booby import validators as v
 from hueclient.models import IndexedByIdDecoder
+from hueclient.monitor import MonitorMixin
 
 
 class ScheduleManager(Manager):
@@ -11,7 +12,7 @@ class ScheduleManager(Manager):
         return self.decoders + [IndexedByIdDecoder()]
 
 
-class Command(Resource):
+class Command(MonitorMixin, Resource):
     address = fields.String(v.Required())
     body = fields.Dictionary()
     local_time = fields.TimePattern(name='localtime')
@@ -20,6 +21,6 @@ class Command(Resource):
     starttime = fields.IsoDate()
 
 
-class Schedule(Resource):
+class Schedule(MonitorMixin, Resource):
     name = fields.String(v.Required())
     description = fields.Embedded(Command)
