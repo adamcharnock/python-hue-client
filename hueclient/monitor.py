@@ -52,15 +52,19 @@ class Monitor(object):
     Attributes:
 
         field (string|callable): The field to monitor. See :func:`MonitorMixin.monitor`.
-        resource (Resource): The resource instance to monitor. See :func:`MonitorMixin.monitor`.
+        resource (Resource): The :class:`Resource` instance to monitor. See :func:`MonitorMixin.monitor`.
         callback (callable): The callback to call when complete
         poll_interval (float): The interval between polls in milliseconds
-        event_queue (eventlet.Queue): The queue onto which to push the change events
-        poll_pool (eventlet.Pool): The pool for the eventlets tasked with polling the API
+        event_queue (Queue): The :class:`eventlet.queue.Queue` onto which to push the change events
+        poll_pool (GreenPool): The :class:`eventlet.greenpool.GreenPool` for the eventlets tasked with polling the API
 
     """
 
     def __init__(self, resource, field, callback, poll_interval, event_queue, poll_pool):
+        """ Initialise a Monitor instance
+
+        See above for definitions of arguments
+        """
         self.field = field
         self.resource = resource
         self.callback = callback
