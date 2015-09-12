@@ -6,6 +6,7 @@ from hueclient.models.bridge import Bridge
 from hueclient.models.groups import Group
 from hueclient.models.light import Light, LightState
 from hueclient.models.sensors import TapSwitch, TapSwitchConfig, TapSwitchState
+from hueclient.utilities import authenticate, authenticate_interactive
 
 
 class HueApiBackend(ApiBackend):
@@ -38,6 +39,12 @@ class HueApi(Api):
             bridge_host=self.bridge_host,
             username=self.username,
         )
+    
+    def authenticate(self, app_name, bridge_host='philips-hue', client_name=None):
+        return authenticate(app_name, bridge_host, client_name)
+    
+    def authenticate_interactive(self, app_name, bridge_host='philips-hue', client_name=None):
+        return authenticate_interactive(app_name, bridge_host, client_name)
 
     def handle_event(self, callback, *args):
         self.handler_pool.spawn_n(callback, *args)

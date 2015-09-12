@@ -32,7 +32,7 @@ def parse_response(response):
         return json
 
 
-def authenticate(bridge_host, app_name, client_name=None):
+def authenticate(app_name, bridge_host, client_name=None):
     client_name = client_name or gethostname()
     url = 'http://{}/api'.format(bridge_host)
     response = requests.post(url, json={
@@ -42,7 +42,13 @@ def authenticate(bridge_host, app_name, client_name=None):
     return json[0]['success']['username']
 
 
-def authenticate_interactive(app_name=None, bridge_host=None, client_name=None):
+def authenticate_interactive(app_name=None, bridge_host=None, client_name=None, force=False):
+    if not force:
+        # Don't reauthenticate if we already have the username on disk
+        existing_username = load_username()
+        if existing_username:
+            return existing_username
+
     host_name = gethostname()
 
     bridge_host = raw_input("Philips Hue Bridge IP address or "
