@@ -1,7 +1,6 @@
 from pprint import pprint
 from hueclient.api import hue_api
 from hueclient.models.light import Light
-from hueclient.models.sensors import TapSwitch, TapSwitchState
 
 if __name__ == '__main__':
     hue_api.authenticate_interactive(app_name='List Lights Example')
