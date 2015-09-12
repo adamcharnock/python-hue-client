@@ -1,6 +1,7 @@
 from repose.managers import Manager
 from repose.resources import Resource
 from hueclient import fields
+from hueclient.models import IndexedByIdDecoder
 from hueclient.monitor import MonitorMixin
 
 
@@ -23,6 +24,15 @@ class TapSwitchState(MonitorMixin, Resource):
         endpoint = '/sensors/{tapswitch_id}/state'
 
 
+class TapSwitchManager(Manager):
+
+    def get_decoders(self):
+        return self.decoders + [IndexedByIdDecoder()]
+
+    def filter(self, results):
+        return filter(lambda s: s.type == 'ZGPSwitch', results)
+
+
 class TapSwitch(MonitorMixin, Resource):
     id = fields.Integer(from_endpoint='id')
     state = fields.Embedded(TapSwitchState)
@@ -32,6 +42,8 @@ class TapSwitch(MonitorMixin, Resource):
     model_id = fields.String(name='modelid')
     manufacturer_name = fields.String(name='manufacturername')
     unique_id = fields.String(name='uniqueid')
+
+    objects = TapSwitchManager()
 
     class Meta:
         endpoint = '/sensors/{id}'
