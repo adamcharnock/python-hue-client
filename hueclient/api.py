@@ -3,7 +3,7 @@ from repose.apibackend import ApiBackend
 
 from hueclient import utilities, exceptions
 from hueclient.models.bridge import Bridge
-from hueclient.models.groups import Group
+from hueclient.models.groups import Group, GroupState
 from hueclient.models.light import Light, LightState
 from hueclient.models.sensors import TapSwitch, TapSwitchConfig, TapSwitchState
 from hueclient.utilities import authenticate, authenticate_interactive
@@ -20,6 +20,7 @@ class HueApi(Api):
         Light,
         LightState,
         Group,
+        GroupState,
         TapSwitch,
         TapSwitchConfig,
         TapSwitchState,

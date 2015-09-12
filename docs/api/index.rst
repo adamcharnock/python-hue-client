@@ -7,4 +7,6 @@ Contents:
     :maxdepth: 2
 
     light
+    group
+    schedule
     monitor

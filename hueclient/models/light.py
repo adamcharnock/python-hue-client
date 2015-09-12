@@ -20,15 +20,27 @@ class LightState(MonitorMixin, Resource):
     MODE_COLOR_TEMP = 'ct'
     MODE_XY = 'xy'
 
+    #: On/Off state of the light. On=true, Off=false
     on = fields.Boolean()
+    #: Brightness of the light. This is a scale from the minimum brightness
+    #: the light is capable of, 1, to the maximum capable brightness, 254.
     brightness = fields.Integer(v.UnsignedInteger(bits=8), name='bri')
     _hue = fields.Integer(v.UnsignedInteger(bits=16))
     _saturation = fields.Integer(v.UnsignedInteger(bits=8), name='sat')
-    effect = fields.String(v.In(['none', 'select', 'lselect']))
     _xy = fields.List(v.CieColorSpaceCoordinates())
     _color_temperature = fields.Integer(v.UnsignedInteger(bits=16), name='ct')
+    #: The alert effect, which is a temporary change to the bulb's state
+    #: (none/select/lselect).
     alert = fields.String(v.In(['none', 'select', 'lselect']))
+    #: The dynamic effect of the light, can either be "none" or "colorloop".
+    effect = fields.String(v.In(['none', 'select', 'lselect']))
+    #: Indicates the color mode in which the light is working, this is
+    #: the last command type it received. Values are "hs" for Hue and Saturation,
+    #: "xy" for XY and "ct" for Color Temperature. Note that this will be
+    #: set automatically upon setting the hue/saturation/xy/colour_temperature
+    #: properties
     color_mode = fields.String(v.In([MODE_HUE_SAT, MODE_COLOR_TEMP, MODE_XY]), name='colormode')
+    #: Indicates if a light can be reached by the bridge.
     reachable = fields.Boolean()
 
     # Write-only properties
@@ -43,11 +55,22 @@ class LightState(MonitorMixin, Resource):
         endpoint = '/lights/{light_id}/state'
 
     def set_rgb(self, red, green, blue):
+        """The red/green/blue color value of the light
+
+        This will be converted and set as the :attr:`xy` value
+        """
         x, y = rgb_to_xy(red, green, blue)
         self.xy = [x, y]
 
     @property
     def xy(self):
+        """The x and y coordinates of a color in CIE color space.
+
+        The first entry is the x coordinate and the second entry is the y coordinate. Both x and y are between 0 and 1.
+
+        For more information see:
+        http://www.developers.meethue.com/documentation/core-concepts#color_gets_more_complicated
+        """
         return self._xy
 
     @xy.setter
@@ -57,6 +80,8 @@ class LightState(MonitorMixin, Resource):
 
     @property
     def hue(self):
+        """Hue of the light. This is a wrapping value between 0 and 65535.
+        Both 0 and 65535 are red, 25500 is green and 46920 is blue."""
         return self._hue
 
     @hue.setter
@@ -66,6 +91,8 @@ class LightState(MonitorMixin, Resource):
 
     @property
     def saturation(self):
+        """Saturation of the light. 254 is the most saturated (colored)
+        and 0 is the least saturated (white)."""
         return self._saturation
 
     @saturation.setter
@@ -75,6 +102,11 @@ class LightState(MonitorMixin, Resource):
 
     @property
     def color_temperature(self):
+        """The Mired Color temperature of the light.
+        2012 connected lights are capable of 153 (6500K)
+        to 500 (2000K).
+
+        """
         return self._color_temperature
 
     @color_temperature.setter
