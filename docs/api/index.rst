@@ -9,4 +9,5 @@ Contents:
     light
     group
     schedule
+    scene
     monitor

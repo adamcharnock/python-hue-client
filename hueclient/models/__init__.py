@@ -9,11 +9,14 @@ class IndexedByIdDecoder(Decoder):
     own ID.
     """
 
+    def __init__(self, type=int):
+        self.type = type
+
     def decode(self, value):
         decoded = []
         for k, v in value.items():
             try:
-                k = int(k)
+                k = self.type(k)
             except (ValueError, TypeError):
                 continue
             # Take the key (the object's ID) and add it do the

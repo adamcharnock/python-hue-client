@@ -43,12 +43,20 @@ class LightState(MonitorMixin, Resource):
     #: Indicates if a light can be reached by the bridge.
     reachable = fields.Boolean()
 
-    # Write-only properties
+    # Write-only properties below...
+
+    #: The duration of the transition from the light's current state to the
+    #: new state. This is given as a multiple of 100ms.
     transition_time = fields.Integer(v.UnsignedInteger(bits=16), name='transitiontime')
+    #: As of 1.7. Increments or decrements the value of the brightness.
     brightness_increment = fields.Integer(v.Integer(), v.Range(min=-254, max=254), name='bri_inc')
+    #: As of 1.7. Increments or decrements the value of the sat.
     saturation_increment = fields.Integer(v.Integer(), v.Range(min=-254, max=254), name='sat_inc')
+    #: As of 1.7. Increments or decrements the value of the hue.
     hue_increment = fields.Integer(v.Integer(), v.Range(min=-65534, max=65534), name='hue_inc')
+    #: As of 1.7. Increments or decrements the value of the ct.
     color_temperature_increment = fields.Integer(v.Integer(), v.Range(min=-65534, max=65534), name='ct_inc')
+    #: As of 1.7. Increments or decrements the value of the xy.
     xy_increment = fields.Integer(v.Float(), v.Range(min=-0.5, max=0.5), name='xy_inc')
 
     class Meta:
