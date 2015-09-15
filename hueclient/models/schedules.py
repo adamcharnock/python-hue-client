@@ -2,7 +2,7 @@ from repose.managers import Manager
 from repose.resources import Resource
 from hueclient import fields
 from booby import validators as v
-from hueclient.models import IndexedByIdDecoder
+from hueclient.decoders import IndexedByIdDecoder
 from hueclient.monitor import MonitorMixin
 
 

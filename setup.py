@@ -12,7 +12,7 @@ setup(
     author='Adam Charnock',
     author_email='adam@adamcharnock.com',
     # If you had hueclient.tests, you would also include that in this list
-    packages=find_packages('src'),
+    packages=find_packages(),
     # Any executable scripts, typically in 'bin'. E.g 'bin/do-something.py'
     scripts=[],
     # REQUIRED: Your project's URL

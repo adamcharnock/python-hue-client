@@ -2,7 +2,7 @@ from repose.managers import Manager
 from repose.resources import Resource
 from hueclient import fields
 from hueclient.fields import ManagedIdListCollection
-from hueclient.models import IndexedByIdDecoder
+from hueclient.decoders import IndexedByIdDecoder
 from hueclient import validators as v
 from hueclient.models.light import Light, LightState, rgb_to_xy
 from hueclient.monitor import MonitorMixin

@@ -1,7 +1,7 @@
 from repose.managers import Manager
 from repose.resources import Resource
 from hueclient import fields
-from hueclient.models import IndexedByIdDecoder
+from hueclient.decoders import IndexedByIdDecoder
 from hueclient import validators as v
 from hueclient.monitor import MonitorMixin
 
