@@ -10,4 +10,5 @@ Contents:
     group
     schedule
     scene
+    rule
     monitor
