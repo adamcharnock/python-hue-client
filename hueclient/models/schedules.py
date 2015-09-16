@@ -13,7 +13,7 @@ class ScheduleManager(Manager):
 
 
 class Command(MonitorMixin, Resource):
-    #: The address to call (without protcol or domain). Eg:
+    #: The address to call (without protocol or domain). Eg:
     #: ``/api/<username>/groups/0/action``
     address = fields.String(v.Required())
     #: The body of the request
