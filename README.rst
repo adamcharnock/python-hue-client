@@ -10,6 +10,10 @@ Python Hue Client
 .. image:: https://img.shields.io/github/license/adamcharnock/python-hue-client.svg
     :target: https://pypi.python.org/pypi/python-hue-client/
 
+.. image:: http://unmaintained.tech/badge.svg
+    :target: http://unmaintained.tech
+    :alt: No Maintenance Intended
+
 
 A full-featured Python client for the Philips Hue lighting system.
 
