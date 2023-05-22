@@ -25,7 +25,7 @@ setup(
     # Any requirements here, e.g. "Django >= 1.1.1"
     install_requires=[
         'booby==0.7.0',
-        'requests==2.20.0',
+        'requests==2.31.0',
     ],
     entry_points={
         'console_scripts': [
